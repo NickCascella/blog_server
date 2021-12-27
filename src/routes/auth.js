@@ -5,4 +5,5 @@ const router = Router();
 router.post("/signup", auth_controller.sign_up_post);
 
 router.post("/login", auth_controller.login_post);
+
 export default router;

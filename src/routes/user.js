@@ -5,7 +5,7 @@ const router = Router();
 
 router.get("/", (req, res) => {
   console.log(req.user, "CHECK");
-  res.send(req.user.username);
+  res.send("YOURE IN");
 });
 
 router.get("/:userId", (req, res) => {
