@@ -19,17 +19,23 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "pug");
-app.use(cors());
+const corsOptions = {
+  origin: ["http://localhost:3000"],
+  methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
-  console.log(process.env.secret);
   if (req.headers.authorization) {
     let authorization = req.headers.authorization.split(" ")[1];
     let decoded = jwt.verify(authorization, process.env.secret);
     // Fetch the user by id
+
     User.findById(decoded.user).then((profile) => {
+      console.log(profile);
       req.context = { user: profile.username };
     });
   }

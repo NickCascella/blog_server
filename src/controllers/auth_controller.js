@@ -102,7 +102,7 @@ exports.login_post = [
           if (err) {
             return next(err);
           }
-          res.send({ token });
+          res.send({ token, user: user.username });
         });
       });
     })(req, res, next);
