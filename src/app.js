@@ -1,11 +1,12 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
-import models from "./models";
+import User from "./models/users";
 import routes from "./routes";
 import passport from "./passport";
 import path from "path";
 import bodyParser from "body-parser";
+const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 
 const mongoDb = process.env.database;
@@ -23,12 +24,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
-  req.context = {
-    models,
-    me: models.users[1],
-  };
-  req.user = req.user ? req.user : false;
-  console.log(req.user, "check");
+  console.log(process.env.secret);
+  if (req.headers.authorization) {
+    let authorization = req.headers.authorization.split(" ")[1];
+    let decoded = jwt.verify(authorization, process.env.secret);
+    // Fetch the user by id
+    User.findById(decoded.user).then((profile) => {
+      req.context = { user: profile.username };
+    });
+  }
+
   next();
 });
 
@@ -43,5 +48,5 @@ app.use("/messages", routes.message);
 app.use("/auth", routes.auth);
 
 app.listen(process.env.PORT, () =>
-  console.log(`Example app listening on port ${process.env.PORT}!`)
+  console.log(`App listening on port ${process.env.PORT}!`)
 );

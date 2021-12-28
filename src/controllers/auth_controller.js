@@ -3,6 +3,7 @@ import { body, validationResult } from "express-validator";
 import User from "../models/users";
 import passport from "passport";
 const jwt = require("jsonwebtoken");
+import "dotenv/config";
 
 exports.sign_up_post = [
   body("data.username", "Username must be between 3 - 20 characters long")
@@ -22,20 +23,14 @@ exports.sign_up_post = [
     .exists()
     .custom((value, { req }) => value === req.body.data.password),
   (req, res, next) => {
-    console.log(req.body);
     req.body = req.body.data;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       // There are errors. Render the form again with sanitized values/error messages.
-      User.count().exec(function (err, results) {
-        if (err) {
-          return next(err);
-        }
-        res.send({
-          errors: errors.array(),
-        });
-        return;
+      res.send({
+        errors: errors.array(),
       });
+      return;
     } else {
       User.findOne({ username: req.body.username }).exec(function (
         err,
@@ -51,7 +46,7 @@ exports.sign_up_post = [
             msg: "Please choose a different username. User already exists.",
           };
           errorArray.push(error);
-          console.log(error);
+
           res.send({
             errors: errorArray,
           });
@@ -89,7 +84,7 @@ exports.login_post = [
     .escape(),
   (req, res, next) => {
     req.body = req.body.data;
-    console.log(req.body);
+
     passport.authenticate("local", { session: false }, (err, user, info) => {
       if (err || !user) {
         return res.status(400).json({
@@ -102,16 +97,13 @@ exports.login_post = [
         if (err) {
           return res.send(err);
         }
-        jwt.sign(
-          { username: user.username },
-          "your_jwt_secret",
-          (err, token) => {
-            if (err) {
-              return next(err);
-            }
-            res.send({ token });
+
+        jwt.sign({ user: user._id }, process.env.secret, (err, token) => {
+          if (err) {
+            return next(err);
           }
-        );
+          res.send({ token });
+        });
       });
     })(req, res, next);
   },

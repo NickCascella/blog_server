@@ -1,3 +1,4 @@
+import "dotenv/config";
 import passport from "passport";
 import passportlocal from "passport-local";
 import bcrypt from "bcryptjs";
@@ -34,12 +35,11 @@ passport.use(
   new JWTStrategy(
     {
       jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken("jwt"),
-      secretOrKey: "your_jwt_secret",
+      secretOrKey: process.env.secret,
     },
     (jwtPayload, cb) => {
-      console.log(jwtPayload, "PAYLOAD");
       //find the user in db if needed. This functionality may be omitted if you store everything you'll need in JWT payload.
-      UserModel.findOne({ username: jwtPayload.username })
+      UserModel.findById(jwtPayload.user)
         .then((user) => {
           return cb(null, user);
         })
