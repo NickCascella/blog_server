@@ -28,13 +28,13 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
   if (req.headers.authorization) {
     let authorization = req.headers.authorization.split(" ")[1];
     let decoded = jwt.verify(authorization, process.env.secret);
     // Fetch the user by id
 
-    User.findById(decoded.user).then((profile) => {
+    await User.findById(decoded.user).then((profile) => {
       req.context = { user: profile.username, userId: profile._id };
     });
   }
