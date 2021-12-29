@@ -29,11 +29,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(async (req, res, next) => {
-  if (req.headers.authorization) {
+  if (
+    req.headers.authorization &&
+    req.headers.authorization !== `Bearer ${null}`
+  ) {
     let authorization = req.headers.authorization.split(" ")[1];
     let decoded = jwt.verify(authorization, process.env.secret);
-    // Fetch the user by id
-
     await User.findById(decoded.user).then((profile) => {
       req.context = { user: profile.username, userId: profile._id };
     });
