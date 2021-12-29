@@ -84,7 +84,7 @@ exports.login_post = [
     .escape(),
   (req, res, next) => {
     req.body = req.body.data;
-
+    console.log(req.body);
     passport.authenticate("local", { session: false }, (err, user, info) => {
       if (err || !user) {
         return res.status(400).json({
@@ -102,7 +102,7 @@ exports.login_post = [
           if (err) {
             return next(err);
           }
-          res.send({ token, user: user.username });
+          res.send({ token, user: user.username, userId: user._id });
         });
       });
     })(req, res, next);

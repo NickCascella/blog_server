@@ -35,11 +35,9 @@ app.use((req, res, next) => {
     // Fetch the user by id
 
     User.findById(decoded.user).then((profile) => {
-      console.log(profile);
-      req.context = { user: profile.username };
+      req.context = { user: profile.username, userId: profile._id };
     });
   }
-
   next();
 });
 
@@ -52,7 +50,6 @@ app.use(
 );
 app.use("/messages", routes.message);
 app.use("/auth", routes.auth);
-
 app.listen(process.env.PORT, () =>
   console.log(`App listening on port ${process.env.PORT}!`)
 );

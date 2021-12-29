@@ -22,12 +22,15 @@ exports.blog_get = (req, res, next) => {
 };
 
 exports.blog_comment_get = (req, res, next) => {
-  Comment.find({ blog: req.params.id }).exec((err, results) => {
-    if (err) {
-      return next(err);
-    }
-    res.send(results);
-  });
+  Comment.find({ blog: req.params.id })
+    .populate("author")
+    .exec((err, results) => {
+      if (err) {
+        return next(err);
+      }
+
+      res.send(results);
+    });
 };
 
 exports.blog_comment_post = [
@@ -47,7 +50,7 @@ exports.blog_comment_post = [
     const comment = new Comment({
       blog: req.body.blog_id,
       body: req.body.comment,
-      author: req.context.user,
+      author: req.context.userId,
     }).save((err) => {
       if (err) {
         return next(err);
@@ -56,3 +59,25 @@ exports.blog_comment_post = [
     });
   },
 ];
+
+exports.blog_comment_delete = (req, res, next) => {
+  Comment.findByIdAndDelete(req.body.blog_comment_id).exec((err, results) => {
+    if (err) {
+      return next(err);
+    }
+    res.send(results);
+  });
+};
+
+exports.blog_comment_put = (req, res, next) => {
+  req.body = req.body.data;
+  Comment.findByIdAndUpdate(
+    { _id: req.body.comment_id },
+    { body: req.body.comment }
+  ).exec((err, results) => {
+    if (err) {
+      return next(err);
+    }
+    res.send(results);
+  });
+};
