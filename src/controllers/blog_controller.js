@@ -71,9 +71,10 @@ exports.blog_comment_delete = (req, res, next) => {
 
 exports.blog_comment_put = (req, res, next) => {
   req.body = req.body.data;
+  console.log(req.body);
   Comment.findByIdAndUpdate(
     { _id: req.body.comment_id },
-    { body: req.body.comment }
+    { body: req.body.comment.body }
   ).exec((err, results) => {
     if (err) {
       return next(err);
