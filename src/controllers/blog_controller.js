@@ -74,16 +74,35 @@ exports.blog_comment_delete = (req, res, next) => {
   });
 };
 
-exports.blog_comment_put = (req, res, next) => {
-  req.body = req.body.data;
-  console.log(req.body);
-  Comment.findByIdAndUpdate(
-    { _id: req.body.comment_id },
-    { body: req.body.comment.body, date: req.body.comment.date }
-  ).exec((err, results) => {
-    if (err) {
-      return next(err);
+exports.blog_comment_put = [
+  body("data.comment.body")
+    .escape()
+    .trim()
+    .isLength({ min: 1, max: 200 })
+    .withMessage("Comment must be between 1 - 200 characters long")
+    .matches(/^[A-Za-z0-9 .,'!&$@#%*()]+$/)
+    .withMessage("Only certain special characters"),
+
+  (req, res, next) => {
+    req.body = req.body.data;
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      console.log(errors.array());
+      res.send({
+        errors: errors.array(),
+      });
+      return;
     }
-    res.send(results);
-  });
-};
+
+    Comment.findByIdAndUpdate(
+      { _id: req.body.comment_id },
+      { body: req.body.comment.body, date: req.body.comment.date }
+    ).exec((err, results) => {
+      if (err) {
+        return next(err);
+      }
+      res.send(results);
+    });
+  },
+];

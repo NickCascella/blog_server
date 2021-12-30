@@ -20,7 +20,7 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "pug");
 const corsOptions = {
-  origin: ["http://localhost:3000"],
+  origin: ["http://localhost:3000", "http://localhost:3006"],
   methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
 };
 
@@ -41,7 +41,7 @@ app.use(async (req, res, next) => {
   }
   next();
 });
-
+app.use("/", routes.home);
 app.use(
   "/blogs",
   passport.authenticate("jwt", { session: false }),

@@ -6,10 +6,13 @@ const jwt = require("jsonwebtoken");
 import "dotenv/config";
 
 exports.sign_up_post = [
-  body("data.username", "Username must be between 3 - 20 characters long")
+  body("data.username")
+    .escape()
     .trim()
     .isLength({ min: 3, max: 20 })
-    .escape(),
+    .withMessage("Username must be between 3 - 20 characters long")
+    .matches(/^[A-Za-z0-9 .,'!&$@#%*()]+$/)
+    .withMessage("Only certain special characters"),
 
   body("data.password", "Password must be between 5 - 10 characters long")
     .trim()
@@ -23,6 +26,7 @@ exports.sign_up_post = [
     .exists()
     .custom((value, { req }) => value === req.body.data.password),
   (req, res, next) => {
+    console.log("help");
     req.body = req.body.data;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -73,38 +77,48 @@ exports.sign_up_post = [
 ];
 
 exports.login_post = [
-  body("data.username", "Username must be between 3 - 20 characters long")
+  body("data.username")
+    .escape()
     .trim()
     .isLength({ min: 3, max: 20 })
-    .escape(),
-
+    .withMessage("Username must be between 3 - 20 characters long")
+    .matches(/^[A-Za-z0-9 .,'!&$@#%*()]+$/)
+    .withMessage("Only certain special characters"),
   body("data.password", "Password must be between 5 - 10 characters long")
     .trim()
     .isLength({ min: 5, max: 10 })
     .escape(),
   (req, res, next) => {
     req.body = req.body.data;
-    console.log(req.body);
-    passport.authenticate("local", { session: false }, (err, user, info) => {
-      if (err || !user) {
-        return res.status(400).json({
-          message: "Something is not right",
-          user: user,
-        });
-      }
-
-      req.login(user, { session: false }, (err) => {
-        if (err) {
-          return res.send(err);
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      // There are errors. Render the form again with sanitized values/error messages.
+      res.send({
+        errors: errors.array(),
+      });
+      return;
+    } else {
+      passport.authenticate("local", { session: false }, (err, user, info) => {
+        if (err || !user) {
+          return res.status(400).json({
+            message: "Something is not right",
+            user: user,
+          });
         }
 
-        jwt.sign({ user: user._id }, process.env.secret, (err, token) => {
+        req.login(user, { session: false }, (err) => {
           if (err) {
-            return next(err);
+            return res.send(err);
           }
-          res.send({ token, user: user.username, userId: user._id });
+
+          jwt.sign({ user: user._id }, process.env.secret, (err, token) => {
+            if (err) {
+              return next(err);
+            }
+            res.send({ token, user: user.username, userId: user._id });
+          });
         });
-      });
-    })(req, res, next);
+      })(req, res, next);
+    }
   },
 ];
