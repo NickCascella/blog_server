@@ -34,23 +34,28 @@ exports.blog_comment_get = (req, res, next) => {
 };
 
 exports.blog_comment_post = [
-  body("data.comment", "Comment must be between 1 - 200 characters long")
+  body("data.comment")
+    .escape()
     .trim()
     .isLength({ min: 1, max: 200 })
-    .escape(),
+    .withMessage("Comment must be between 1 - 200 characters long")
+    .matches(/^[A-Za-z0-9 .,'!&$@#%*()]+$/)
+    .withMessage("Only certain special characters"),
   (req, res, next) => {
     req.body = req.body.data;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      // There are errors. Render the form again with sanitized values/error messages.
+      console.log(errors.array());
       res.send({
         errors: errors.array(),
       });
+      return;
     }
     const comment = new Comment({
       blog: req.body.blog_id,
       body: req.body.comment,
       author: req.context.userId,
+      date: req.body.date,
     }).save((err) => {
       if (err) {
         return next(err);
@@ -74,7 +79,7 @@ exports.blog_comment_put = (req, res, next) => {
   console.log(req.body);
   Comment.findByIdAndUpdate(
     { _id: req.body.comment_id },
-    { body: req.body.comment.body }
+    { body: req.body.comment.body, date: req.body.comment.date }
   ).exec((err, results) => {
     if (err) {
       return next(err);

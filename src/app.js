@@ -42,14 +42,11 @@ app.use(async (req, res, next) => {
   next();
 });
 
-app.use("/session", routes.session);
-app.use("/user", passport.authenticate("jwt", { session: false }), routes.user);
 app.use(
   "/blogs",
   passport.authenticate("jwt", { session: false }),
   routes.blog
 );
-app.use("/messages", routes.message);
 app.use("/auth", routes.auth);
 app.listen(process.env.PORT, () =>
   console.log(`App listening on port ${process.env.PORT}!`)
