@@ -21,10 +21,11 @@ exports.login_post = [
 
   (req, res, next) => {
     req.body = req.body.data;
-    console.log(req.body);
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       // There are errors. Render the form again with sanitized values/error messages.
+
       res.send({
         errors: errors.array(),
       });

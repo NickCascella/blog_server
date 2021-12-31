@@ -26,7 +26,6 @@ exports.sign_up_post = [
     .exists()
     .custom((value, { req }) => value === req.body.data.password),
   (req, res, next) => {
-    console.log("help");
     req.body = req.body.data;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -90,9 +89,9 @@ exports.login_post = [
     .escape(),
   (req, res, next) => {
     req.body = req.body.data;
+    console.log("errors");
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      // There are errors. Render the form again with sanitized values/error messages.
       res.send({
         errors: errors.array(),
       });
