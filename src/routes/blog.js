@@ -21,4 +21,6 @@ router.put("/admin/:id", blog_admin_controller.blog_put);
 
 router.delete("/admin/:id", blog_admin_controller.blog_delete);
 
+router.post("/admin", blog_admin_controller.blog_post);
+
 export default router;
