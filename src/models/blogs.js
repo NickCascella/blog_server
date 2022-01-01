@@ -8,6 +8,7 @@ const Blog = new Schema({
   created_date: { type: String, required: true },
   edited_date: { type: String },
   published: { type: Boolean, required: true },
+  author: { type: Schema.Types.ObjectId, ref: "user", required: true },
 });
 
 module.exports = mongoose.model("blog", Blog);

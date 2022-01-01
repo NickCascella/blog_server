@@ -6,35 +6,44 @@ exports.blog_put = [
   body("data.blog_title")
     .escape()
     .trim()
-    .isLength({ min: 1, max: 20 })
-    .withMessage("Comment must be between 1 - 20 characters long")
+    .isLength({ min: 1, max: 50 })
+    .withMessage("Title must be between 1 - 50 characters long")
     .matches(/^[A-Za-z0-9 .,'!&$@#%*()]+$/)
-    .withMessage("Only certain special characters"),
+    .withMessage(
+      "Only certain special characters are permitted !&$@#%*()_ - Blog Title"
+    ),
   body("data.blog_description")
     .escape()
     .trim()
-    .isLength({ min: 1, max: 40 })
-    .withMessage("Comment must be between 1 - 40 characters long")
-    .matches(/^[A-Za-z0-9 .,'!&$@#%*()]+$/)
-    .withMessage("Only certain special characters"),
+    .isLength({ min: 1, max: 100 })
+    .withMessage("Description must be between 1 - 100 characters long")
+    .matches(/^[A-Za-z0-9 .,'!&$@#%*()_]+$/)
+    .withMessage(
+      "Only certain special characters are permitted !&$@#%*()_ - Blog Description"
+    ),
   body("data.blog_body")
     .escape()
     .trim()
     .isLength({ min: 1, max: 1000 })
-    .withMessage("Comment must be between 1 - 1000 characters long")
+    .withMessage("Content must be between 1 - 1000 characters long")
     .matches(/^[A-Za-z0-9 .,'!&$@#%*()]+$/)
-    .withMessage("Only certain special characters"),
-  body("data.edited_date")
+    .withMessage(
+      "Only certain special characters are permitted !&$@#%*()_ - Blog Body"
+    ),
+  body("data.blog_edited_date")
     .escape()
     .trim()
     .matches(/^[A-Za-z0-9 .,'!&$@#%*():-]+$/)
-    .withMessage("Only certain special characters"),
+    .withMessage(
+      "Only certain special characters are permitted !&$@#%*()_ - Blog edited date"
+    ),
   body("data.published").escape().trim(),
   (req, res, next) => {
     const request = req.body.data;
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
+      console.log(errors.array());
       res.send({
         errors: errors.array(),
       });
@@ -82,47 +91,55 @@ exports.blog_post = [
   body("data.blog_title")
     .escape()
     .trim()
-    .isLength({ min: 1, max: 20 })
-    .withMessage("Comment must be between 1 - 20 characters long")
+    .isLength({ min: 1, max: 50 })
+    .withMessage("Title must be between 1 - 50 characters long")
     .matches(/^[A-Za-z0-9 .,'!&$@#%*()]+$/)
-    .withMessage("Only certain special characters"),
+    .withMessage(
+      "Only certain special characters are permitted !&$@#%*()_ - Blog Title"
+    ),
   body("data.blog_description")
     .escape()
     .trim()
-    .isLength({ min: 1, max: 40 })
-    .withMessage("Comment must be between 1 - 40 characters long")
-    .matches(/^[A-Za-z0-9 .,'!&$@#%*()]+$/)
-    .withMessage("Only certain special characters"),
+    .isLength({ min: 1, max: 100 })
+    .withMessage("Description must be between 1 - 100 characters long")
+    .matches(/^[A-Za-z0-9 .,'!&$@#%*()_]+$/)
+    .withMessage(
+      "Only certain special characters are permitted !&$@#%*()_ - Blog Description"
+    ),
   body("data.blog_body")
     .escape()
     .trim()
     .isLength({ min: 1, max: 1000 })
-    .withMessage("Comment must be between 1 - 1000 characters long")
+    .withMessage("Content must be between 1 - 1000 characters long")
     .matches(/^[A-Za-z0-9 .,'!&$@#%*()]+$/)
-    .withMessage("Only certain special characters"),
+    .withMessage(
+      "Only certain special characters are permitted !&$@#%*()_ - Blog Body"
+    ),
   body("data.created_date")
     .escape()
     .trim()
     .matches(/^[A-Za-z0-9 .,'!&$@#%*():-]+$/)
     .withMessage("Only certain special characters"),
   body("data.published").escape().trim(),
+  body("data.author").escape().trim(),
   (req, res, next) => {
-    console.log(req.body, "hix");
     const request = req.body.data;
-    const errors = validationResult(req.body.data);
+    const errors = validationResult(req);
+
     if (!errors.isEmpty()) {
-      console.log(errors.array());
       res.send({
         errors: errors.array(),
       });
       return;
     }
+
     const blog = new Blog({
       title: request.blog_title,
       body: request.blog_body,
       description: request.blog_description,
       created_date: request.created_date,
       published: request.blog_published,
+      author: request.author,
     }).save((err) => {
       if (err) {
         return next(err);

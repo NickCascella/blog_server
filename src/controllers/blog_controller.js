@@ -3,22 +3,25 @@ import Comment from "../models/comment";
 import { body, validationResult } from "express-validator";
 
 exports.blogs_get = (req, res, next) => {
-  Blog.find().exec((err, results) => {
-    if (err) {
-      return next(err);
-    }
-
-    res.send(results);
-  });
+  Blog.find()
+    .populate("author")
+    .exec((err, results) => {
+      if (err) {
+        return next(err);
+      }
+      res.send(results);
+    });
 };
 
 exports.blog_get = (req, res, next) => {
-  Blog.findById(req.params.id).exec((err, results) => {
-    if (err) {
-      return next(err);
-    }
-    res.send(results);
-  });
+  Blog.findById(req.params.id)
+    .populate("author")
+    .exec((err, results) => {
+      if (err) {
+        return next(err);
+      }
+      res.send(results);
+    });
 };
 
 exports.blog_comment_get = (req, res, next) => {
