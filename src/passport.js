@@ -14,7 +14,7 @@ passport.use(
     return UserModel.findOne({ username })
       .then((user) => {
         if (!user) {
-          return done(null, false, { message: "Incorrect email or password." });
+          return done(null, false, { message: "User does not exist" });
         }
         bcrypt.compare(password, user.password, (err, res) => {
           if (res) {
@@ -25,7 +25,6 @@ passport.use(
             return done(null, false, { message: "Incorrect password" });
           }
         });
-        return done(null, user, { message: "Logged In Successfully" });
       })
       .catch((err) => done(err));
   })

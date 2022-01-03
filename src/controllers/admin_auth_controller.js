@@ -17,7 +17,7 @@ exports.login_post = [
     .trim()
     .isLength({ min: 5, max: 10 })
     .escape(),
-  body("data.admin_code", "Incorrect credentials").trim().escape(),
+  body("data.admin_code", "Invalid characters").trim().escape(),
 
   (req, res, next) => {
     req.body = req.body.data;
@@ -31,31 +31,40 @@ exports.login_post = [
       });
       return;
     } else if (req.body.admin_code !== process.env.admin_code) {
-      let error = [{ msg: "Incorrect credentials" }];
+      let error = [{ msg: "Incorrect administrative code" }];
       res.send({
         errors: error,
       });
       return;
     } else {
       passport.authenticate("local", { session: false }, (err, user, info) => {
+        console.log(info);
         if (err || !user) {
-          return res.status(400).json({
-            message: "Incorrect login",
-            user: user,
-          });
+          let errorArray = [];
+          errorArray.push({ msg: info.message });
+          res.send({ errors: errorArray });
+          return;
         }
-
         req.login(user, { session: false }, (err) => {
           if (err) {
-            return res.send(err);
+            return next(err);
           }
-
-          jwt.sign({ user: user._id }, process.env.secret, (err, token) => {
-            if (err) {
-              return next(err);
+          jwt.sign(
+            { user: user._id },
+            process.env.secret,
+            { expiresIn: "10s" },
+            (err, accessToken) => {
+              if (err) {
+                return next(err);
+              }
+              res.send({
+                accessToken,
+                user: user.username,
+                userId: user._id,
+              });
+              return;
             }
-            res.send({ token, user: user.username, userId: user._id });
-          });
+          );
         });
       })(req, res, next);
     }

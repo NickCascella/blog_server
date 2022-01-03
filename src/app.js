@@ -34,10 +34,22 @@ app.use(async (req, res, next) => {
     req.headers.authorization !== `Bearer ${null}`
   ) {
     let authorization = req.headers.authorization.split(" ")[1];
-    let decoded = jwt.verify(authorization, process.env.secret);
-    await User.findById(decoded.user).then((profile) => {
-      req.context = { user: profile.username, userId: profile._id };
+
+    jwt.verify(authorization, process.env.secret, async (err, results) => {
+      if (err) {
+        res.status(401).send("EXPIRED TOKEN");
+        return next(err);
+      }
+      await User.findById(results.user).then((profile) => {
+        req.context = { user: profile.username, userId: profile._id };
+      });
     });
+
+    // let decoded = jwt.verify(authorization, process.env.secret);
+
+    // await User.findById(decoded.user).then((profile) => {
+    //   req.context = { user: profile.username, userId: profile._id };
+    // });
   }
   next();
 });

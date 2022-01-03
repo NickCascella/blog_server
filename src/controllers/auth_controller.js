@@ -82,14 +82,14 @@ exports.login_post = [
     .isLength({ min: 3, max: 20 })
     .withMessage("Username must be between 3 - 20 characters long")
     .matches(/^[A-Za-z0-9 .,'!&$@#%*()]+$/)
-    .withMessage("Only certain special characters"),
+    .withMessage("Only certain special characters - Username"),
   body("data.password", "Password must be between 5 - 10 characters long")
     .trim()
     .isLength({ min: 5, max: 10 })
     .escape(),
   (req, res, next) => {
     req.body = req.body.data;
-    console.log("errors");
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.send({
@@ -99,15 +99,14 @@ exports.login_post = [
     } else {
       passport.authenticate("local", { session: false }, (err, user, info) => {
         if (err || !user) {
-          return res.status(400).json({
-            message: "Something is not right",
-            user: user,
-          });
+          let errorArray = [];
+          errorArray.push({ msg: info.message });
+          res.send({ errors: errorArray });
+          return;
         }
-
         req.login(user, { session: false }, (err) => {
           if (err) {
-            return res.send(err);
+            return next(err);
           }
 
           jwt.sign({ user: user._id }, process.env.secret, (err, token) => {
