@@ -44,12 +44,6 @@ app.use(async (req, res, next) => {
         req.context = { user: profile.username, userId: profile._id };
       });
     });
-
-    // let decoded = jwt.verify(authorization, process.env.secret);
-
-    // await User.findById(decoded.user).then((profile) => {
-    //   req.context = { user: profile.username, userId: profile._id };
-    // });
   }
   next();
 });

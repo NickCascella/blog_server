@@ -97,26 +97,48 @@ exports.login_post = [
       });
       return;
     } else {
-      passport.authenticate("local", { session: false }, (err, user, info) => {
-        if (err || !user) {
-          let errorArray = [];
-          errorArray.push({ msg: info.message });
-          res.send({ errors: errorArray });
-          return;
-        }
-        req.login(user, { session: false }, (err) => {
-          if (err) {
-            return next(err);
-          }
+      passport.authenticate(
+        "local",
+        { session: false },
 
-          jwt.sign({ user: user._id }, process.env.secret, (err, token) => {
+        (err, user, info) => {
+          if (err || !user) {
+            let errorArray = [];
+            errorArray.push({ msg: info.message });
+            res.send({ errors: errorArray });
+            return;
+          }
+          req.login(user, { session: false }, async (err) => {
             if (err) {
               return next(err);
             }
-            res.send({ token, user: user.username, userId: user._id });
+
+            // const accessToken = jwt.sign(
+            //   { user: user._id },
+            //   process.env.secret,
+            //   { expiresIn: "20m" }
+            // );
+
+            // res.send({
+            //   token: accessToken,
+            //   user: user.username,
+            //   userId: user._id,
+            // });
+
+            jwt.sign(
+              { user: user._id },
+              process.env.secret,
+              { expiresIn: "10s" },
+              (err, token) => {
+                if (err) {
+                  return next(err);
+                }
+                res.send({ token, user: user.username, userId: user._id });
+              }
+            );
           });
-        });
-      })(req, res, next);
+        }
+      )(req, res, next);
     }
   },
 ];
