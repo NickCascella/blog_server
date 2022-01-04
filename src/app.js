@@ -48,9 +48,9 @@ app.use(async (req, res, next) => {
       await User.findById(results.user).then((profile) => {
         req.context = { user: profile.username, userId: profile._id };
       });
+      next();
     });
   }
-  next();
 });
 app.use("/", routes.home);
 app.use(
