@@ -1,7 +1,10 @@
 html
-    body
-        head
-        form(action="/auth/login", method="post") 
-            input#username(type="text", name="username" value="nick") 
-            input#password(type="password", name="password" value="1234") 
-            button(type="submit") Hi
+  head
+    title Blog Server
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    h1(class="serverTitle") Nick's Blog Server!
+    div(class="icon-container")
+        div(class='pulsing-7') 

@@ -22,10 +22,8 @@ app.set("view engine", "pug");
 const corsOptions = {
   origin: ["http://localhost:3000", "http://localhost:3006"],
   credentials: true,
-
   methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
 };
-
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
