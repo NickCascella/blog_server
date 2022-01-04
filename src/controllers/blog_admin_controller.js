@@ -33,7 +33,7 @@ exports.blog_put = [
   body("data.blog_edited_date")
     .escape()
     .trim()
-    .matches(/^[A-Za-z0-9 .,'!&$@#%*():-'?]+$/)
+    .matches(/^[A-Za-z0-9 .,'!&$@#%*():'?]+$/)
     .withMessage(
       "Only certain special characters are permitted !&$@#%*()_ - Blog edited date"
     ),
@@ -92,7 +92,7 @@ exports.blog_post = [
     .trim()
     .isLength({ min: 1, max: 50 })
     .withMessage("Title must be between 1 - 50 characters long")
-    .matches(/^[A-Za-z0-9 .,'!&$@#%*()'?:]+$/)
+    .matches(/^[A-Za-z0-9 .,'!&$@#%*()]+$/)
     .withMessage(
       "Only certain special characters are permitted !&$@#%*()_ - Blog Title"
     ),
@@ -101,7 +101,7 @@ exports.blog_post = [
     .trim()
     .isLength({ min: 1, max: 100 })
     .withMessage("Description must be between 1 - 100 characters long")
-    .matches(/^[A-Za-z0-9 .,'!&$@#%*()_'?:]+$/)
+    .matches(/^[A-Za-z0-9 .,'!&$@#%*()_]+$/)
     .withMessage(
       "Only certain special characters are permitted !&$@#%*()_ - Blog Description"
     ),
@@ -110,14 +110,14 @@ exports.blog_post = [
     .trim()
     .isLength({ min: 1, max: 1000 })
     .withMessage("Content must be between 1 - 1000 characters long")
-    .matches(/^[A-Za-z0-9 .,'!&$@#%*()'?:]+$/)
+    .matches(/^[A-Za-z0-9 .,'!&$@#%*()]+$/)
     .withMessage(
       "Only certain special characters are permitted !&$@#%*()_ - Blog Body"
     ),
   body("data.created_date")
     .escape()
     .trim()
-    .matches(/^[A-Za-z0-9 .,'!&$@#%*():'?-]+$/)
+    .matches(/^[A-Za-z0-9 .,'!&$@#%*():-]+$/)
     .withMessage("Only certain special characters"),
   body("data.published").escape().trim(),
   body("data.author").escape().trim(),
