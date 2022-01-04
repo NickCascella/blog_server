@@ -20,7 +20,11 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "pug");
 const corsOptions = {
-  origin: ["http://localhost:3000", "http://localhost:3006"],
+  origin: [
+    "http://localhost:3000",
+    "http://localhost:3006",
+    "https://blog-user-portal-top.herokuapp.com",
+  ],
   credentials: true,
   methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
 };
