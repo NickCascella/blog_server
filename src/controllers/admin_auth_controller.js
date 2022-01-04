@@ -1,4 +1,3 @@
-import bcrypt from "bcryptjs";
 import { body, validationResult } from "express-validator";
 import User from "../models/users";
 import passport from "passport";
@@ -21,7 +20,7 @@ exports.login_post = [
 
   (req, res, next) => {
     req.body = req.body.data;
-
+    console.log("Hello");
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       // There are errors. Render the form again with sanitized values/error messages.

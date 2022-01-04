@@ -29,6 +29,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(async (req, res, next) => {
+  console.log(req.body);
   if (
     req.headers.authorization &&
     req.headers.authorization !== `Bearer ${null}`
@@ -54,6 +55,6 @@ app.use(
   routes.blog
 );
 app.use("/auth", routes.auth);
-app.listen(process.env.PORT, () =>
+app.listen(process.env.PORT || 5000 || 3000, () =>
   console.log(`App listening on port ${process.env.PORT}!`)
 );
