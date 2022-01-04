@@ -10,7 +10,7 @@ exports.login_post = [
     .trim()
     .isLength({ min: 3, max: 20 })
     .withMessage("Username must be between 3 - 20 characters long")
-    .matches(/^[A-Za-z0-9 .,'!&$@#%*()]+$/)
+    .matches(/^[A-Za-z0-9 .,'!&$@#%*()'?:]+$/)
     .withMessage("Only certain special characters"),
   body("data.password", "Password must be between 5 - 10 characters long")
     .trim()

@@ -42,7 +42,7 @@ exports.blog_comment_post = [
     .trim()
     .isLength({ min: 1, max: 200 })
     .withMessage("Comment must be between 1 - 200 characters long")
-    .matches(/^[A-Za-z0-9 .,'!&$@#%*()]+$/)
+    .matches(/^[A-Za-z0-9 .,'!&$@#%*()'?:]+$/)
     .withMessage("Only certain special characters"),
   (req, res, next) => {
     req.body = req.body.data;
@@ -83,7 +83,7 @@ exports.blog_comment_put = [
     .trim()
     .isLength({ min: 1, max: 200 })
     .withMessage("Comment must be between 1 - 200 characters long")
-    .matches(/^[A-Za-z0-9 .,'!&$@#%*()]+$/)
+    .matches(/^[A-Za-z0-9 .,'!&$@#%*()'?:]+$/)
     .withMessage("Only certain special characters"),
 
   (req, res, next) => {
