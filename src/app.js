@@ -21,6 +21,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "pug");
 const corsOptions = {
   origin: ["http://localhost:3000", "http://localhost:3006"],
+  credentials: true,
   methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
 };
 
@@ -29,7 +30,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(async (req, res, next) => {
-  console.log(req.body);
   if (
     req.headers.authorization &&
     req.headers.authorization !== `Bearer ${null}`

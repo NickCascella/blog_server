@@ -43,7 +43,6 @@ exports.blog_put = [
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      console.log(errors.array());
       res.send({
         errors: errors.array(),
       });
@@ -144,7 +143,7 @@ exports.blog_post = [
       if (err) {
         return next(err);
       }
-      console.log(blog);
+
       res.status(201).send("Blog created");
     });
   },
