@@ -50,8 +50,11 @@ app.use(async (req, res, next) => {
       });
       next();
     });
+  } else {
+    next();
   }
 });
+
 app.use("/", routes.home);
 app.use(
   "/blogs",

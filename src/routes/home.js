@@ -2,7 +2,7 @@ import { Router } from "express";
 const router = Router();
 
 router.get("/", (req, res, next) => {
-  res.render("test");
+  res.render("homePage");
 });
 
 export default router;
