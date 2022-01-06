@@ -30,13 +30,7 @@ exports.blog_put = [
     .withMessage(
       "Only certain special characters are permitted !&$@#%*()_ - Blog Body"
     ),
-  body("data.blog_edited_date")
-    .escape()
-    .trim()
-    .matches(/^[A-Za-z0-9 .,'!&$@#%*():'?]+$/)
-    .withMessage(
-      "Only certain special characters are permitted !&$@#%*()_ - Blog edited date"
-    ),
+  body("data.blog_edited_date").escape().trim(),
   body("data.published").escape().trim(),
   (req, res, next) => {
     const request = req.body.data;
@@ -114,11 +108,7 @@ exports.blog_post = [
     .withMessage(
       "Only certain special characters are permitted !&$@#%*()_ - Blog Body"
     ),
-  body("data.created_date")
-    .escape()
-    .trim()
-    .matches(/^[A-Za-z0-9 .,'!&$@#%*():-]+$/)
-    .withMessage("Only certain special characters"),
+  body("data.created_date").escape().trim(),
   body("data.published").escape().trim(),
   body("data.author").escape().trim(),
   (req, res, next) => {
